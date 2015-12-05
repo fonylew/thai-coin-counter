@@ -12,10 +12,20 @@ class Coin{
         int centery;
         Coin();
         Coin(int iindex,int iradius,int icenterx,int icentery);
+        bool Compare(const Coin& c) const {
+           if (radius<c.radius) return false;
+           return true;
+        }
+        bool operator == (const Coin& c) const {
+            return Compare(c);
+        }
+
+        bool operator < (const Coin& c) const {
+            return Compare(c);
+        }
         bool operator () (const Coin& a, const Coin& b) const {
-            if (a.radius > b.radius) return true;
-            if (a.radius < b.radius) return false;
-            return a.index < b.index;
+            if (a.Compare(b)) return false;
+            return true;
         }
 };
 
@@ -28,6 +38,16 @@ Coin::Coin(int iindex,int iradius,int icenterx,int icentery){
     centerx = icenterx;
     centery = icentery;
 }
+
+//int Coin::Compare (const Coin& c) {
+//   if (radius<c.radius) {
+//      return -1;
+//   }
+//   else if (radius>c.radius) {
+//      return 1;
+//   }
+//   return 0;
+//}
 
 int main(){
     for(int p=1;p<=4;p++){
@@ -53,9 +73,13 @@ int main(){
 
         // Apply the Hough Transform to find the circles
         //for testcoin.jpg
-        HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 2, 100,200,150,50 );
+        HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 2, 100,200,110,50 );
 
         Coin coins[circles.size()];
+        // EXPERIMENTAL
+        vector<int> type;
+        int ntype = 0;
+        map<int,int> valuencoin;
 
         // Draw the circles detected
         for( size_t i = 0; i < circles.size(); i++ ){
@@ -81,12 +105,41 @@ int main(){
             cout<<endl;
         }
 
+        // CLUSTERING
+        sort(coins,coins+circles.size());
+        //Test sorted
+        cout<<endl<<"sort : ";
+
+        //Initial value
+        int prev_rad = 0;
+        float diff_rad, weight_diff, min_diff;
+        //There exists a coin
+        if(circles.size()>0) {
+            ntype = 1;
+            prev_rad = coins[0].radius;
+            diff_rad = 5;
+            weight_diff =0.95;
+            min_diff = 3;
+        }
+        for(int i=0;i<circles.size();i++){
+            //count types
+            if(prev_rad - coins[i].radius > diff_rad){
+                cout <<" | ";
+                ntype++;
+                if(diff_rad > min_diff) diff_rad *= weight_diff;
+                prev_rad = coins[i].radius;
+            }
+            //print sortednumber
+            cout<<coins[i].radius<<">";
+        }
+        cout<<endl<<"Number of Types : "<<ntype<<endl;
+
         cout <<"Total Objects : "<<circles.size()<<endl;
         cout <<"============================================"<<endl;
         // Show your results
         namedWindow( "Hough Circle "+to_string(p), CV_WINDOW_AUTOSIZE );
         imshow( "Hough Circle "+to_string(p), src );
-        imshow( "Gray "+to_string(p), gray );
+        //imshow( "Gray "+to_string(p), gray );
     }
     waitKey(0);
     return 0;
