@@ -53,7 +53,7 @@ int main(){
 
         // Apply the Hough Transform to find the circles
         //for testcoin.jpg
-        HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 2, 100,200,100,50 );
+        HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 2, 100,200,150,50 );
 
         Coin coins[circles.size()];
 
