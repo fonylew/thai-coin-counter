@@ -73,7 +73,7 @@ int main(){
 
         // Apply the Hough Transform to find the circles
         //for testcoin.jpg
-        HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 2, 100,200,110,50 );
+        HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 2, 100,200,110,33 );
 
         Coin coins[circles.size()];
         // EXPERIMENTAL
@@ -82,7 +82,7 @@ int main(){
         float sum = 0.0;
         map<float,int> valuencoin;
         vector<float> value {10,5,2,1,0.5,0.25};
-        vector<float> tenratio {1.0834,1.1955,1.31,1.45,1.625};
+        vector<float> tenratio {1.0834,1.18,1.31,1.45,1.625};
 
         // Draw the circles detected
         for( size_t i = 0; i < circles.size(); i++ ){
@@ -163,7 +163,7 @@ int main(){
             }
 
             //Valid Coin
-            if(vindex>=0) valuencoin[value[vindex]]++;
+            if(vindex>=0&&hasTen) valuencoin[value[vindex]]++;
 
             //print sortednumber
             cout<<coins[i].radius<<">";
@@ -178,8 +178,8 @@ int main(){
         cout <<"SUM : "<<sum<<endl;
         cout <<"============================================"<<endl;
         // Show your results
-        //namedWindow( "Hough Circle "+to_string(p), CV_WINDOW_AUTOSIZE );
-        //imshow( "Hough Circle "+to_string(p), src );
+        namedWindow( "Hough Circle "+to_string(p), CV_WINDOW_AUTOSIZE );
+        imshow( "Hough Circle "+to_string(p), src );
         //imshow( "Gray "+to_string(p), gray );
     }
     waitKey(0);
