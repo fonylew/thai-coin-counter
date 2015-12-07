@@ -73,7 +73,7 @@ int main(){
 
         // Apply the Hough Transform to find the circles
         //for testcoin.jpg
-        HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 2, 100,200,110,33 );
+        HoughCircles( gray, circles, CV_HOUGH_GRADIENT, 2, 100,200,110,50 );
 
         Coin coins[circles.size()];
         // EXPERIMENTAL
@@ -82,7 +82,7 @@ int main(){
         float sum = 0.0;
         map<float,int> valuencoin;
         vector<float> value {10,5,2,1,0.5,0.25};
-        vector<float> tenratio {1.0834,1.18,1.31,1.45,1.625};
+        vector<float> tenratio {1.085,1.18,1.31,1.45,1.625};
 
         // Draw the circles detected
         for( size_t i = 0; i < circles.size(); i++ ){
@@ -114,7 +114,7 @@ int main(){
         cout<<endl<<"sort : ";
 
         //Initial value
-        int prev_rad = 0, tentype=0 ,vindex=0;
+        int prev_rad = 0, tentype=0 ,vindex=0,iindex=1;
         float ten_rad=0;
         float diff_rad, weight_diff, min_diff;
         bool hasTen = false;
@@ -130,11 +130,18 @@ int main(){
             //count types
             //new type
             if(prev_rad - coins[i].radius > diff_rad){
-                if(ten_rad/coins[i].radius < tenratio[1]) vindex = 1;       //5 baht
-                else if(ten_rad/coins[i].radius < tenratio[2]) vindex = 2;  //2 baht
-                else if(ten_rad/coins[i].radius < tenratio[3]) vindex = 3;  //1 baht
-                else if(ten_rad/coins[i].radius < tenratio[4]) vindex = 4;  //0.5 baht
-                else if(ten_rad/coins[i].radius < tenratio[5]) vindex = 5;  //0.25 baht
+                for(int j=iindex;j<value.size();j++){
+                    if(ten_rad/coins[i].radius<tenratio[j]){
+                        vindex=j;
+                        iindex=j+1;
+                        break;
+                    }
+                }
+//                if(ten_rad/coins[i].radius < tenratio[1]) vindex = 1;       //5 baht
+//                else if(ten_rad/coins[i].radius < tenratio[2]) vindex = 2;  //2 baht
+//                else if(ten_rad/coins[i].radius < tenratio[3]) vindex = 3;  //1 baht
+//                else if(ten_rad/coins[i].radius < tenratio[4]) vindex = 4;  //0.5 baht
+//                else if(ten_rad/coins[i].radius < tenratio[5]) vindex = 5;  //0.25 baht
 
                 cout <<" | ";
                 ntype++;
@@ -178,8 +185,8 @@ int main(){
         cout <<"SUM : "<<sum<<endl;
         cout <<"============================================"<<endl;
         // Show your results
-        namedWindow( "Hough Circle "+to_string(p), CV_WINDOW_AUTOSIZE );
-        imshow( "Hough Circle "+to_string(p), src );
+        //namedWindow( "Hough Circle "+to_string(p), CV_WINDOW_AUTOSIZE );
+        // imshow( "Hough Circle "+to_string(p), src );
         //imshow( "Gray "+to_string(p), gray );
     }
     waitKey(0);
